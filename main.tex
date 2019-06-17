@@ -502,12 +502,11 @@ array([[47.05483  19.042616]
 \end{frame}
 
 \begin{frame}{Three ways to get data}
-
 \begin{center}
-\renewcommand{\arraystretch}{1.25}
-\begin{tabular}{p{0.28\linewidth} c p{0.28\linewidth} c p{0.28\linewidth}}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{p{0.3\linewidth} c p{0.3\linewidth} c p{0.3\linewidth}}
 {\LARGE\bf Direct} & & {\LARGE\bf Lazy} & & {\LARGE\bf Iterative} \\
-Read from the file and return an array. & & Get an object that reads on demand. & & Read arrays in batches of entries. \\
+Simply read from the file and return an array. & & Get an object that reads on demand; transparently work on big data. & & Read arrays in batches of entries; more control over data loading/unloading. \\
 \begin{minipage}{\linewidth}
 \vspace{0.5\baselineskip}
 \begin{itemize}
@@ -523,25 +522,23 @@ Read from the file and return an array. & & Get an object that reads on demand. 
 \item \href{https://uproot.readthedocs.io/en/latest/ttree-handling.html\#id13}{\textcolor{blue}{TBranch.lazyarray}}
 \item \href{https://uproot.readthedocs.io/en/latest/ttree-handling.html\#lazyarray}{\textcolor{blue}{TTree.lazyarray}}
 \item \href{https://uproot.readthedocs.io/en/latest/ttree-handling.html\#lazyarrays}{\textcolor{blue}{TTree.lazyarrays}}
-\item \href{https://uproot.readthedocs.io/en/latest/opening-files.html\#uproot-lazyarray-and-lazyarrays}{\textcolor{blue}{uproot.lazyarray}}
-\item \href{https://uproot.readthedocs.io/en/latest/opening-files.html\#uproot-lazyarray-and-lazyarrays}{\textcolor{blue}{uproot.lazyarrays}}
+\item \href{https://uproot.readthedocs.io/en/latest/opening-files.html\#uproot-lazyarray-and-lazyarrays}{\textcolor{blue}{uproot.lazyarray}}*
+\item \href{https://uproot.readthedocs.io/en/latest/opening-files.html\#uproot-lazyarray-and-lazyarrays}{\textcolor{blue}{uproot.lazyarrays}}*
 \end{itemize}
 \end{minipage} & &
 \begin{minipage}{\linewidth}
 \vspace{0.5\baselineskip}
 \begin{itemize}
 \item \href{https://uproot.readthedocs.io/en/latest/ttree-handling.html\#iterate}{\textcolor{blue}{TTree.iterate}}
-\item \href{https://uproot.readthedocs.io/en/latest/opening-files.html\#uproot-iterate}{\textcolor{blue}{uproot.iterate}}
+\item \href{https://uproot.readthedocs.io/en/latest/opening-files.html\#uproot-iterate}{\textcolor{blue}{uproot.iterate}}*
 \vspace{3.7\baselineskip}
 \end{itemize}
-\end{minipage} \\
-
-
+\end{minipage}
 \end{tabular}
 \end{center}
 
-
-
+\vspace{0.25 cm}
+*Lazy arrays/iteration over sets of files.
 \end{frame}
 
 
