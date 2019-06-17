@@ -651,8 +651,47 @@ Simply read from the file and return an array. & & Get an object that reads on d
 *Lazy arrays/iteration over sets of files.
 \end{frame}
 
-\begin{frame}{}
+\begin{frame}[fragile]{Direct vs iterative}
+\large
+\vspace{0.25 cm}
+If you have a small file, you can simply read the whole thing into arrays.
 
+\small
+\begin{minted}{python}
+pt, eta = ttree.arrays(["Muon_pt", "Muon_eta"], outputtype=tuple)
+pz = pt * numpy.sinh(eta)        # calculate everything at once
+
+counts, edges = numpy.histogram(pz.flatten(),
+                    bins=100, range=(-2000, 2000))
+\end{minted}
+
+\large
+\vspace{-0.1 cm}
+\begin{uncoverenv}<2->
+but if you have many files or limited memory, iterate over chunks.
+
+\small
+\vspace{-0.1 cm}
+\begin{minted}{python}
+counts = None
+for pt, eta in uproot.iterate("files*.root", "Events",
+        ["Muon_pt", "Muon_eta"], outputtype=tuple, entrysteps="3 GB"):
+    pz = pt * numpy.sinh(eta)    # calculate 3 GB at a time
+    newcounts, edges = numpy.histogram(pz.flatten(),
+                           bins=100, range=(-2000, 2000))
+    if counts is None:
+        counts = newcounts
+    else:
+        counts += newcounts
+\end{minted}
+\large
+
+\vspace{-1.3 cm}
+\hfill \begin{minipage}{0.35\linewidth}
+Same array calculation (\mintinline{python}{pz}), but merging is manual.
+\end{minipage}
+\vspace{1.3 cm}
+\end{uncoverenv}
 \end{frame}
 
 
