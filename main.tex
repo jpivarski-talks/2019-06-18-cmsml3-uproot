@@ -109,10 +109,40 @@ for event in tree:
     for pt, eta in zip(event.Muon_pt, event.Muon.eta):
         pt * math.sinh(eta)
 \end{minted}
-\normalsize
+\large
 
 \vspace{0.25 cm}
 BUT the above is \textcolor{darkblue}{$36\times$ slower than pure Python} (and $1000\times$ slower than C++) because of reflection {\it in the loop.}
+\end{frame}
+
+\begin{frame}[fragile]{New methods to go directly to Numpy}
+\large
+\vspace{0.5 cm}
+New ``Pythonizations'' are being added to PyROOT for useful features like {\tt AsMatrix}, which fill an array on the C++ side, without reflection.
+
+\small
+\begin{minted}{python}
+tree.AsMatrix(["MET_px", "MET_py"])
+\end{minted}
+\begin{verbatim}
+array([[  5.91277122,   2.5636332 ],
+       [ 24.76520348, -16.34910965],
+       [-25.78508759,  16.23713112],
+       ...,
+       [ 18.10164642,  50.29071808],
+       [ 79.87519073, -52.35145187],
+       [ 19.71374893,  -3.59541821]])
+\end{verbatim}
+\large
+
+\vspace{0.25 cm}
+The return type is an unlabeled matrix, but you can ask for the labels explicitly (e.g.\ to make a Pandas DataFrame).
+
+\small
+\begin{minted}{python}
+data, labels = tree.AsMatrix(["MET_px", "MET_py"], return_labels=True)
+pandas.DataFrame(data, columns=labels)
+\end{minted}
 \end{frame}
 
 \end{document}
