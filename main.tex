@@ -104,14 +104,14 @@ PyROOT is unique among Python-C++ bindings in that no manual association of Pyth
 \vspace{0.25 cm}
 \small
 \begin{minted}{python}
->>> file = ROOT.TFile("cms-nanoaod.root")
->>> tree = file.Get("Events")
->>> tree.SetBranchStatus("*", 0)
->>> tree.SetBranchStatus("nMuon", 1)
->>> tree.SetBranchStatus("Muon_pt", 1)
->>> tree.SetBranchStatus("Muon_eta", 1)
+>>> tfile = ROOT.TFile("cms-nanoaod.root")
+>>> ttree = tfile.Get("Events")
+>>> ttree.SetBranchStatus("*", 0)
+>>> ttree.SetBranchStatus("nMuon", 1)
+>>> ttree.SetBranchStatus("Muon_pt", 1)
+>>> ttree.SetBranchStatus("Muon_eta", 1)
 
->>> for event in tree:
+>>> for event in ttree:
 ...     for pt, eta in zip(event.Muon_pt, event.Muon.eta):
 ...         pt * math.sinh(eta)
 \end{minted}
@@ -128,9 +128,9 @@ New ``Pythonizations'' are being added to PyROOT for useful features like {\tt A
 
 \small
 \begin{minted}{python}
->>> tree.AsMatrix(["MET_px", "MET_py"])
+>>> ttree.AsMatrix(["MET_px", "MET_py"])
 \end{minted}
-\begin{verbatim}
+\color{darkblue}\vspace{-0.5\baselineskip}\begin{verbatim}
 array([[  5.91277122,   2.5636332 ],
        [ 24.76520348, -16.34910965],
        [-25.78508759,  16.23713112],
@@ -139,6 +139,7 @@ array([[  5.91277122,   2.5636332 ],
        [ 79.87519073, -52.35145187],
        [ 19.71374893,  -3.59541821]])
 \end{verbatim}
+\color{black}
 \large
 
 \vspace{0.25 cm}
@@ -147,7 +148,7 @@ The return type is an unlabeled matrix, but you can ask for the labels explicitl
 
 \small
 \begin{minted}{python}
-data, labels = tree.AsMatrix(["MET_px", "MET_py"], return_labels=True)
+data, labels = ttree.AsMatrix(["MET_px", "MET_py"], return_labels=True)
 pandas.DataFrame(data, columns=labels)
 \end{minted}
 \end{uncoverenv}
@@ -158,9 +159,9 @@ pandas.DataFrame(data, columns=labels)
 
 \small
 \begin{minted}{python}
->>> tree.AsMatrix(["Muon_pt"])  # arbitrary number of muons per event
+>>> ttree.AsMatrix(["Muon_pt"])  # arbitrary number of muons per event
 \end{minted}
-\begin{verbatim}
+\color{darkblue}\vspace{-0.5\baselineskip}\begin{verbatim}
 array([[0.],
        [0.],
        [0.],
@@ -203,7 +204,7 @@ Approach \#2: \textcolor{darkblue}{root\_numpy}
 \vspace{0.25 cm}
 \small
 \begin{minted}{python}
-root_numpy.tree2array(tree, ["MET_px", "MET_py"])     # PyROOT "tree"
+root_numpy.tree2array(ttree, ["MET_px", "MET_py"])    # PyROOT "ttree"
 
 root_numpy.root2array("cms-nanoaod.root", "Events",   # no PyROOT
                       ["MET_px/1000.0", "MET_py/1000.0"])
@@ -225,9 +226,9 @@ root\_numpy {\it can} read collections of numeric types (``jagged arrays''), but
 
 \small
 \begin{minted}{python}
->>> root_numpy.tree2array(tree, "Muon_pt")
+>>> root_numpy.tree2array(ttree, "Muon_pt")
 \end{minted}
-\begin{verbatim}
+\color{darkblue}\vspace{-\baselineskip}\begin{verbatim}
 array([array([], dtype=float32),
        array([], dtype=float32),
        array([5.315762], dtype=float32),
@@ -237,6 +238,7 @@ array([array([], dtype=float32),
        array([44.28051, 6.6997213], dtype=float32)],
       dtype=object)
 \end{verbatim}
+\color{black}
 
 \large
 Undermines the two advantages of Numpy: speed and flexibility (inner arrays are not recognized as a dimension).
@@ -263,12 +265,13 @@ Approach \#3: \textcolor{darkblue}{uproot}
 \begin{minted}{python}
 uproot.open("cms-nanoaod.root")["Events"].arrays(["MET_px", "MET_py"])
 \end{minted}
-\begin{verbatim}
+\color{darkblue}\vspace{-0.5\baselineskip}\begin{verbatim}
 {b'MET_px': array([ 5.912771,  24.76520, -25.785088, ...,
                    18.101646,  79.87519,  19.713749], dtype=float32),
  b'MET_py': array([ 2.563633, -16.34911,  16.237131, ...,
                    50.290718, -52.35145,  -3.595418], dtype=float32)}
 \end{verbatim}
+\color{black}
 
 \large
 \begin{uncoverenv}<2->
@@ -293,9 +296,10 @@ Rather than forcing our data structures into Numpy's types, we built new types o
 \end{minted}
 
 \vspace{-0.6 cm}
-\begin{verbatim}
+\color{darkblue}\begin{verbatim}
 <JaggedArray [[] [] [5.315762] ... [26.351288] [] [44.28051 6.6997213]]>
 \end{verbatim}
+\color{black}
 
 \begin{uncoverenv}<2->
 \vspace{-0.6 cm}
@@ -304,9 +308,10 @@ Rather than forcing our data structures into Numpy's types, we built new types o
 \end{minted}
 
 \vspace{-0.6 cm}
-\begin{verbatim}
+\color{darkblue}\begin{verbatim}
 <class 'awkward.array.jagged.JaggedArray'>
 \end{verbatim}
+\color{black}
 \end{uncoverenv}
 
 \begin{uncoverenv}<3->
@@ -316,10 +321,11 @@ Rather than forcing our data structures into Numpy's types, we built new types o
 \end{minted}
 
 \vspace{-0.6 cm}
-\begin{verbatim}
+\color{darkblue}\begin{verbatim}
 (array([0, 0, 1, ..., 1, 0, 2]),
  array([5.31576, 47.0548, 19.04261, ..., 26.35128, 44.2805, 6.699721]))
 \end{verbatim}
+\color{black}
 \end{uncoverenv}
 
 \begin{uncoverenv}<4->
@@ -329,9 +335,10 @@ Rather than forcing our data structures into Numpy's types, we built new types o
 \end{minted}
 
 \vspace{-0.6 cm}
-\begin{verbatim}
+\color{darkblue}\begin{verbatim}
 <JaggedArray [[5.3157] [47.054 19.0426] ... [26.3512] [44.280 6.69972]]>
 \end{verbatim}
+\color{black}
 \end{uncoverenv}
 
 \begin{uncoverenv}<5->
@@ -341,9 +348,10 @@ Rather than forcing our data structures into Numpy's types, we built new types o
 \end{minted}
 
 \vspace{-0.6 cm}
-\begin{verbatim}
+\color{darkblue}\begin{verbatim}
 array([5.31576, 47.0548, 15.77672, ..., 10.06197, 26.35128, 44.2805])
 \end{verbatim}
+\color{black}
 \end{uncoverenv}
 \end{columns}
 \end{frame}
@@ -384,44 +392,49 @@ C++ & TBranch::GetEntry & \href{https://github.com/nsmith-/coffea/blob/master/no
 \end{frame}
 
 \begin{frame}[fragile]{Jagged $\to$ flat restructuring: padding and clipping}
-
 \small
 \begin{minted}{python}
 >>> pt
 \end{minted}
 
 \vspace{-0.45 cm}
-\begin{verbatim}
+\color{darkblue}\begin{verbatim}
 <JaggedArray [[              ] [         ] [5.315762          ] ...
               [26.351288     ] [         ] [44.28051 6.6997213]]>
 \end{verbatim}
+\color{black}
 
+\vspace{-0.5\baselineskip}
 \begin{minted}{python}
 >>> pt.pad(2, clip=True)                        # subarrays → pairs
 \end{minted}
 
 \vspace{-0.45 cm}
-\begin{verbatim}
+\color{darkblue}\begin{verbatim}
 <JaggedArray [[     None None] [None None] [5.315762 None     ] ...
               [26.351288 None] [None None] [44.28051 6.6997213]]>
 \end{verbatim}
+\color{black}
 
+\vspace{-0.5\baselineskip}
 \begin{minted}{python}
 >>> pt.pad(2, clip=True).fillna(0)              # None → 0.0
 \end{minted}
 
 \vspace{-0.45 cm}
-\begin{verbatim}
+\color{darkblue}\begin{verbatim}
 <JaggedArray [[ 0.0       0.0] [ 0.0  0.0] [5.315762 0.0      ] ...
               [26.351288  0.0] [ 0.0  0.0] [44.28051 6.6997213]]>
 \end{verbatim}
+\color{black}
 
+\vspace{-0.5\baselineskip}
 \begin{minted}{python}
 >>> pt.pad(2, clip=True).fillna(0).regular()    # Awkward → Numpy
 \end{minted}
 
 \vspace{-0.45 cm}
-\begin{verbatim}
+\color{darkblue}\begin{verbatim}
 array([[ 0.        0.       ]
        [ 0.        0.       ]
        [ 5.315762  0.       ]
@@ -430,7 +443,65 @@ array([[ 0.        0.       ]
        [ 0.        0.       ]
        [44.28051   6.6997213]])
 \end{verbatim}
+\color{black}
 \end{frame}
+
+\begin{frame}[fragile]{Jagged $\to$ flat restructuring: combinatorics}
+\small
+\begin{minted}{python}
+>>> pairs = pt.choose(2)                         # distinct pairs
+>>> pairs
+\end{minted}
+
+\vspace{-0.45 cm}
+\color{darkblue}\begin{verbatim}
+<JaggedArray [[] [] [] ... [] [] [(44.28051, 6.6997213)]]>
+\end{verbatim}
+\color{black}
+
+\vspace{-0.5\baselineskip}
+\begin{minted}{python}
+>>> pairs[pairs.counts > 0]                      # drop if no pairs
+\end{minted}
+
+\vspace{-0.45 cm}
+\color{darkblue}\begin{verbatim}
+<JaggedArray [[(47.054, 19.04)]
+              [(30.902, 17.22) (30.902, 9.700) (17.228, 9.700)] ...
+              [(23.843, 8.940)]
+              [(44.280, 6.699)]]>
+\end{verbatim}
+\color{black}
+
+\vspace{-0.5\baselineskip}
+\begin{minted}{python}
+>>> pairs[pairs.counts > 0].flatten().unzip()    # split left-right
+\end{minted}
+
+\vspace{-0.45 cm}
+\color{darkblue}\begin{verbatim}
+(array([47.0548, 30.9022, 30.9022, ..., 36.5802, 23.8430, 44.2805]),
+ array([19.0426, 17.2284,  9.7000, ...,  9.5405,  8.9407 , 6.6997]))
+\end{verbatim}
+\color{black}
+
+\vspace{-0.5\baselineskip}
+\begin{minted}{python}
+>>> numpy.stack(pairs[pairs.counts > 0].flatten().unzip(), axis=1)
+\end{minted}
+
+\vspace{-0.45 cm}
+\color{darkblue}\begin{verbatim}
+array([[47.05483  19.042616]
+       [30.902279 17.228409]
+       ...,
+       [23.843002  8.940705]
+       [44.28051   6.6997213]])
+\end{verbatim}
+\color{black}
+\end{frame}
+
+
 
 
 
