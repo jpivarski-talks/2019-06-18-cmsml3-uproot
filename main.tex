@@ -91,4 +91,28 @@
 \includegraphics[width=\linewidth]{abstraction-layers.png}
 \end{frame}
 
+\begin{frame}[fragile]{PyROOT's universal bindings are great, but slow}
+\vspace{0.5 cm}
+PyROOT is unique among Python-C++ bindings in that no manual association of Python objects to C++ objects is required (thanks to ROOT/Cling's C++ reflection).
+
+\vspace{0.25 cm}
+\small
+\begin{minted}{python}
+file = ROOT.TFile("cms-nanoaod-DYJetsToLL.root")
+tree = file.Get("tree")
+tree.SetBranchStatus("*", 0)
+tree.SetBranchStatus("nMuon", 1)
+tree.SetBranchStatus("Muon_pt", 1)
+tree.SetBranchStatus("Muon_eta", 1)
+
+for event in tree:
+    for pt, eta in zip(event.Muon_pt, event.Muon.eta):
+        pt * math.sinh(eta)
+\end{minted}
+\normalsize
+
+\vspace{0.25 cm}
+BUT the above is \textcolor{darkblue}{$36\times$ slower than pure Python} (and $1000\times$ slower than C++) because of reflection {\it in the loop.}
+\end{frame}
+
 \end{document}
