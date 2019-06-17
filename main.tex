@@ -91,15 +91,22 @@
 \includegraphics[width=\linewidth]{abstraction-layers.png}
 \end{frame}
 
-\begin{frame}[fragile]{PyROOT's universal bindings are great, but slow}
+\begin{frame}{}
+\LARGE
+\begin{center}
+Approach \#1: \textcolor{darkblue}{PyROOT}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{PyROOT's universal bindings are great, but slow$^2$}
 \vspace{0.5 cm}
 PyROOT is unique among Python-C++ bindings in that no manual association of Python objects to C++ objects is required (thanks to ROOT/Cling's C++ reflection).
 
 \vspace{0.25 cm}
 \small
 \begin{minted}{python}
-file = ROOT.TFile("cms-nanoaod-DYJetsToLL.root")
-tree = file.Get("tree")
+file = ROOT.TFile("cms-nanoaod.root")
+tree = file.Get("Events")
 tree.SetBranchStatus("*", 0)
 tree.SetBranchStatus("nMuon", 1)
 tree.SetBranchStatus("Muon_pt", 1)
@@ -185,9 +192,28 @@ dictionary.
 \end{frame}
 
 \begin{frame}{}
+\LARGE
+\begin{center}
+Approach \#2: \textcolor{darkblue}{root\_numpy}
+\end{center}
+\end{frame}
 
+\begin{frame}[fragile]{root\_numpy compiles into Python and ROOT}
+\vspace{0.25 cm}
+\small
+\begin{minted}{python}
+root_numpy.tree2array(tree, ["MET_px", "MET_py"])     # PyROOT "tree"
 
+root_numpy.root2array("cms-nanoaod.root", "Events",   # no PyROOT
+                      ["MET_px/1000.0", "MET_py/1000.0"])
+\end{minted}
+\large
 
+\vspace{0.25 cm}
+Any {\tt TTree::Draw} expression may be used, not just branch names, and it's as fast as {\tt TTree::Draw}. You can think of it as ``{\tt TTree::Draw} to Numpy.''
+
+\vspace{0.25 cm}
+\mbox{ } \hfill \includegraphics[width=0.8\linewidth]{root-numpy-fast.png} \hfill \mbox{ }
 \end{frame}
 
 
