@@ -66,7 +66,6 @@
 \hfill \includegraphics[height=0.8 cm]{caffe2-logo.png}
 \hfill \includegraphics[height=0.8 cm]{gluon-logo.png} \mbox{ }
 
-\vspace{0.15 cm}
 \mbox{ } \includegraphics[height=0.8 cm]{chainer-logo.png}
 \hfill \includegraphics[height=1 cm]{cntk-logo.png}
 \hfill \includegraphics[height=0.8 cm]{lasagne-logo.png}
@@ -216,6 +215,49 @@ Any {\tt TTree::Draw} expression may be used, not just branch names, and it's as
 \mbox{ } \hfill \includegraphics[width=0.8\linewidth]{root-numpy-fast.png} \hfill \mbox{ }
 \end{frame}
 
-root-numpy-optionalroot.png
+\begin{frame}[fragile]{Collections in root\_numpy}
+\large
+\vspace{0.5 cm}
+
+root\_numpy {\it can} read collections of numeric types (``jagged arrays''), but uses the nearest Numpy type: an array whose contents are arrays (i.e. Python objects).
+
+\small
+\begin{minted}{python}
+root_numpy.tree2array(tree, "Muon_pt")
+\end{minted}
+\begin{verbatim}
+array([array([], dtype=float32),
+       array([], dtype=float32),
+       array([5.315762], dtype=float32),
+       ...,
+       array([26.351288], dtype=float32),
+       array([], dtype=float32),
+       array([44.28051, 6.6997213], dtype=float32)],
+      dtype=object)
+\end{verbatim}
+
+\large
+Undermines the two advantages of Numpy: speed and flexibility (inner arrays are not recognized as a dimension).
+\end{frame}
+
+\begin{frame}{}
+\begin{columns}
+\column{1.145\linewidth}
+\includegraphics[width=\linewidth]{root-numpy-optionalroot.png}
+\end{columns}
+\end{frame}
+
+\begin{frame}{}
+\LARGE
+\begin{center}
+Approach \#3: \textcolor{darkblue}{uproot}
+\end{center}
+\end{frame}
+
+\begin{frame}{}
+
+
+
+\end{frame}
 
 \end{document}
