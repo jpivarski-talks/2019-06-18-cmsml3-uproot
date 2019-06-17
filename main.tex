@@ -282,7 +282,7 @@ But it's not slow: it only uses Python to find the baskets and cast \mbox{them a
 \large
 \vspace{0.25 cm}
 
-Rather than fitting our data structures into Numpy's types, we built new types out of basic arrays.
+Rather than forcing our data structures into Numpy's types, we built new types out of basic arrays.
 
 \begin{columns}
 \column{1.07\linewidth}
@@ -347,6 +347,43 @@ array([5.31576, 47.0548, 15.77672, ..., 10.06197, 26.35128, 44.2805])
 \end{uncoverenv}
 \end{columns}
 \end{frame}
+
+\begin{frame}{Like Numpy itself, awkward operations $\sim$ the speed of C++}
+\large
+\vspace{0.35 cm}
+
+\textcolor{darkblue}{Very simple benchmark:} \mintinline{python}{pz = pt*numpy.sinh(eta)} for jagged \mintinline{python}{pt}, \mintinline{python}{eta}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{c l r}
+\hline Python & uproot load $+$ awkward compute & 0.7 + 0.5 = 1.2$\times$ \\
+C++ & ROOT TBranch::GetEntry & \phantom{0.7 + 0.5 =} 1$\times$\phantom{.0} \\
+C++ & ROOT TTreeReader & \phantom{0.7 + 0.5 =} 2$\times$\phantom{.0} \\
+C++ & ROOT RDataFrame & \phantom{0.7 + 0.5 =} 3.5$\times$ \\
+Python & root\_numpy load $+$ for loop & 14 + 42 = 56$\times$\phantom{.0} \\
+Python & PyROOT & \phantom{0.7 + 0.5 =} 1000$\times$\phantom{.0} \\ \hline
+\end{tabular}
+\end{center}
+
+\vspace{0.25 cm}
+\textcolor{darkblue}{Realistic analysis:} Z mass peak
+
+\vspace{-0.5 cm}
+\begin{columns}
+\column{0.6\linewidth}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{c l c r}
+\hline Python & uproot $+$ awkward & \href{https://github.com/nsmith-/coffea/blob/master/notebooks/zpeak.ipynb}{\textcolor{blue}{zpeak.ipynb}} & 1.5$\times$ \\
+C++ & TBranch::GetEntry & \href{https://github.com/nsmith-/coffea/blob/master/notebooks/ZPeak.C}{\textcolor{blue}{ZPeak.C}} & 1$\times$\phantom{.0} \\ \hline
+\end{tabular}
+
+\column{0.25\linewidth}
+\includegraphics[width=\linewidth]{zpeak-performance-breakdown.png}
+\end{columns}
+\end{frame}
+
+
 
 
 \end{document}
