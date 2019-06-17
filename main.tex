@@ -145,4 +145,51 @@ pandas.DataFrame(data, columns=labels)
 \end{minted}
 \end{frame}
 
+\begin{frame}[fragile]{However, {\tt AsMatrix} is only for numeric branches: no collections}
+\vspace{0.5 cm}
+
+\small
+\begin{minted}{python}
+tree.AsMatrix(["Muon_pt"])    # arbitrary number of muons per event
+\end{minted}
+\begin{verbatim}
+array([[0.],
+       [0.],
+       [0.],
+       ...,
+       [0.],
+       [0.],
+       [0.]])
+\end{verbatim}
+
+\vspace{-0.2 cm}
+\color{gray}
+\begin{verbatim}
+Error in <TTreeReaderValueBase::GetBranchDataType()>: Must use
+TTreeReaderArray to read branch Muon_pt: it contains an array
+or a collection.
+\end{verbatim}
+\begin{verbatim}
+Error in <TTreeReaderValueBase::CreateProxy()>: The branch Muon_pt
+contains data of type {UNDETERMINED TYPE}, which does not have a
+dictionary.
+\end{verbatim}
+\end{frame}
+
+\begin{frame}{}
+\vspace{-0.1 cm}
+\begin{columns}
+\column{1.145\linewidth}
+\includegraphics[width=\linewidth]{03-coming-soon-2.png}
+\end{columns}
+\end{frame}
+
+\begin{frame}{}
+
+
+
+\end{frame}
+
+
+
 \end{document}
