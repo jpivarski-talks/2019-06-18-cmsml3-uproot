@@ -288,8 +288,8 @@ Rather than forcing our data structures into Numpy's types, we built new types o
 \column{1.07\linewidth}
 \small
 \begin{minted}{python}
->>> a = uproot.open("cms-nanoaod.root")["Events"].array("Muon_pt")
->>> a
+>>> pt = uproot.open("cms-nanoaod.root")["Events"].array("Muon_pt")
+>>> pt
 \end{minted}
 
 \vspace{-0.6 cm}
@@ -300,7 +300,7 @@ Rather than forcing our data structures into Numpy's types, we built new types o
 \begin{uncoverenv}<2->
 \vspace{-0.6 cm}
 \begin{minted}{python}
->>> type(a)              # not really a Numpy array
+>>> type(pt)               # not really a Numpy array
 \end{minted}
 
 \vspace{-0.6 cm}
@@ -312,7 +312,7 @@ Rather than forcing our data structures into Numpy's types, we built new types o
 \begin{uncoverenv}<3->
 \vspace{-0.6 cm}
 \begin{minted}{python}
->>> a.counts, a.content  # two contiguous arrays, not millions of them
+>>> pt.counts, pt.content  # two contiguous arrays, not millions of them
 \end{minted}
 
 \vspace{-0.6 cm}
@@ -325,7 +325,7 @@ Rather than forcing our data structures into Numpy's types, we built new types o
 \begin{uncoverenv}<4->
 \vspace{-0.6 cm}
 \begin{minted}{python}
->>> a[a.counts > 0]      # filter by elementwise comparison, like Numpy
+>>> pt[pt.counts > 0]      # filter by elementwise comparison, like Numpy
 \end{minted}
 
 \vspace{-0.6 cm}
@@ -337,7 +337,7 @@ Rather than forcing our data structures into Numpy's types, we built new types o
 \begin{uncoverenv}<5->
 \vspace{-0.6 cm}
 \begin{minted}{python}
->>> a[a.counts > 0, 0]   # jagged inner data are a slicable dimension
+>>> pt[pt.counts > 0, 0]   # jagged inner data are a slicable dimension
 \end{minted}
 
 \vspace{-0.6 cm}
@@ -383,6 +383,54 @@ C++ & TBranch::GetEntry & \href{https://github.com/nsmith-/coffea/blob/master/no
 \end{columns}
 \end{frame}
 
+\begin{frame}[fragile]{Jagged $\to$ flat restructuring: padding and clipping}
+
+\small
+\begin{minted}{python}
+>>> pt
+\end{minted}
+
+\vspace{-0.45 cm}
+\begin{verbatim}
+<JaggedArray [[              ] [         ] [5.315762          ] ...
+              [26.351288     ] [         ] [44.28051 6.6997213]]>
+\end{verbatim}
+
+\begin{minted}{python}
+>>> pt.pad(2, clip=True)                        # subarrays → pairs
+\end{minted}
+
+\vspace{-0.45 cm}
+\begin{verbatim}
+<JaggedArray [[     None None] [None None] [5.315762 None     ] ...
+              [26.351288 None] [None None] [44.28051 6.6997213]]>
+\end{verbatim}
+
+\begin{minted}{python}
+>>> pt.pad(2, clip=True).fillna(0)              # None → 0.0
+\end{minted}
+
+\vspace{-0.45 cm}
+\begin{verbatim}
+<JaggedArray [[ 0.0       0.0] [ 0.0  0.0] [5.315762 0.0      ] ...
+              [26.351288  0.0] [ 0.0  0.0] [44.28051 6.6997213]]>
+\end{verbatim}
+
+\begin{minted}{python}
+>>> pt.pad(2, clip=True).fillna(0).regular()    # Awkward → Numpy
+\end{minted}
+
+\vspace{-0.45 cm}
+\begin{verbatim}
+array([[ 0.        0.       ]
+       [ 0.        0.       ]
+       [ 5.315762  0.       ]
+       ...
+       [26.351288  0.       ]
+       [ 0.        0.       ]
+       [44.28051   6.6997213]])
+\end{verbatim}
+\end{frame}
 
 
 
