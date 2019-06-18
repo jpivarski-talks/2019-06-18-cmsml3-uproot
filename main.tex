@@ -814,11 +814,11 @@ Since everything is loaded on demand, some fields can be defined in terms of oth
 
 \vspace{-0.4 cm}
 \color{darkblue}\begin{verbatim}
-<ChunkedArray [[]
-               []
-               [TLorentzVector(5.315, 1.127, 2.695, 0.1057)] ...
-               [TLorentzVector(44.281, 0.78564, 2.3838, 0.10571)
-                TLorentzVector(6.6997, 1.9197, -0.070618, 0.10571)]]>
+<ChunkedArray [[] []
+               [TLorentzVector(5.315, 1.127, 2.695, 0.1057)]
+               ...
+               [TLorentzVector(44.281, 0.7856,  2.3838, 0.10571)
+                TLorentzVector(6.6997, 1.9197, -0.0706, 0.10571)]]>
 \end{verbatim}
 \color{black}\large
 
@@ -853,7 +853,38 @@ So we can compute things like ``$\Delta \phi$ between every muon and its associa
 \end{uncoverenv}
 \end{frame}
 
+\begin{frame}{With lazy arrays, uproot now uses half of the awkward-array classes}
+\vspace{0.35 cm}
+\begin{columns}
+\column{1.1\linewidth}
+\begin{tabular}{p{0.26\linewidth} p{0.71\linewidth}}
+\textcolor{mauve}{\mintinline{python}{JaggedArray}}        & \textcolor{mauve}{array containing variable-length subarrays} \\
+\textcolor{red}{\mintinline{python}{Table}}                & \textcolor{red}{struct of arrays, presented as an array of structs} \\
+\textcolor{red}{\mintinline{python}{ObjectArray}}          & \textcolor{red}{creates Python objects on demand, such as \mintinline{python}{TLorentzVector}} \\
+\textcolor{red}{\mintinline{python}{Methods}}              & \textcolor{red}{vectorized methods, like \mintinline{python}{muons.delta_phi(muons.jet)}} \\
+\textcolor{blue}{\mintinline{python}{StringArray}}         & \textcolor{blue}{strings (jagged array of characters)} \\
+\mintinline{python}{IndexedArray}                          & ``pointers'' into another array (via integer indexes) \\
+\mintinline{python}{SparseArray}                           & inverse of {\tt IndexedArray}: zero everywhere except specified indexes \\
+\mintinline{python}{MaskedArray}                           & marks elements as {\tt None} with a byte array \\
+\textcolor{blue}{\mintinline{python}{BitMaskedArray}}      & \textcolor{blue}{marks elements as {\tt None} with a bit array} \\
+\textcolor{red}{\mintinline{python}{IndexedMaskedArray}}   & \textcolor{red}{indexes and masks in one array to avoid placeholders in the data array} \\
+\mintinline{python}{UnionArray}                            & contains multiple (enumerated) types \\
+\textcolor{mauve}{\mintinline{python}{ChunkedArray}}       & \textcolor{mauve}{view discontiguous memory buffers as one array} \\
+\mintinline{python}{AppendableArray}                       & efficiently grow an array in chunks \\
+\textcolor{mauve}{\mintinline{python}{VirtualArray}}       & \textcolor{mauve}{load data on demand} \\
+\end{tabular}
 
+\vspace{-0.25 cm}
+\begin{center}
+\begin{minipage}{0.63\linewidth}
+\small
+\textcolor{red}{used by uproot to read ROOT}, \textcolor{blue}{used to read Parquet}, \textcolor{mauve}{used for both}
+
+lazy arrays are \mintinline{python}{ChunkedArrays} containing \mintinline{python}{VirtualArrays}.
+\end{minipage}
+\end{center}
+\end{columns}
+\end{frame}
 
 
 
