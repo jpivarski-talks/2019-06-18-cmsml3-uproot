@@ -222,7 +222,7 @@ Any {\tt TTree::Draw} expression may be used, not just branch names, and it's as
 \large
 \vspace{0.5 cm}
 
-root\_numpy {\it can} read collections of numeric types (``jagged arrays''), but uses the nearest Numpy type: an array whose contents are arrays (i.e. Python objects).
+root\_numpy {\it can} read collections of numeric types (``jagged arrays''), but fills the nearest Numpy type: an array whose contents are arrays (i.e. Python objects).
 
 \small
 \begin{minted}{python}
@@ -399,7 +399,7 @@ C++ & TBranch::GetEntry & \href{https://github.com/nsmith-/coffea/blob/master/no
 
 \vspace{-0.45 cm}
 \color{darkblue}\begin{verbatim}
-<JaggedArray [[              ] [         ] [5.315762          ] ...
+<JaggedArray [[              ] [         ] [ 5.31576          ] ...
               [26.351288     ] [         ] [44.28051 6.6997213]]>
 \end{verbatim}
 \color{black}
@@ -411,7 +411,7 @@ C++ & TBranch::GetEntry & \href{https://github.com/nsmith-/coffea/blob/master/no
 
 \vspace{-0.45 cm}
 \color{darkblue}\begin{verbatim}
-<JaggedArray [[     None None] [None None] [5.315762 None     ] ...
+<JaggedArray [[     None None] [None None] [ 5.31576 None     ] ...
               [26.351288 None] [None None] [44.28051 6.6997213]]>
 \end{verbatim}
 \color{black}
@@ -423,7 +423,7 @@ C++ & TBranch::GetEntry & \href{https://github.com/nsmith-/coffea/blob/master/no
 
 \vspace{-0.45 cm}
 \color{darkblue}\begin{verbatim}
-<JaggedArray [[ 0.0       0.0] [ 0.0  0.0] [5.315762 0.0      ] ...
+<JaggedArray [[ 0.0       0.0] [ 0.0  0.0] [ 5.31576 0.0      ] ...
               [26.351288  0.0] [ 0.0  0.0] [44.28051 6.6997213]]>
 \end{verbatim}
 \color{black}
@@ -749,7 +749,7 @@ The following splits data into 1~GB chunks, loading no more than 3~GB at a time,
 
 \begin{columns}
 \column{1.05\linewidth}
-If you know your TTrees are CMS NanoAOD, you can get lazy arrays restructured in an event hierarchy:
+If your TTrees are CMS NanoAOD, you can get lazy arrays as an event hierarchy:
 
 \small
 \begin{minted}{python}
@@ -765,7 +765,7 @@ If you know your TTrees are CMS NanoAOD, you can get lazy arrays restructured in
 
 \vspace{-0.6 cm}
 \begin{minted}{python}
->>> events.muons        # now it reads nMuon...
+>>> events.muons           # now it reads nMuon...
 \end{minted}
 
 \vspace{-0.6 cm}
@@ -776,7 +776,7 @@ If you know your TTrees are CMS NanoAOD, you can get lazy arrays restructured in
 
 \vspace{-0.6 cm}
 \begin{minted}{python}
->>> events.muons.pt     # now it reads Muon_pt...
+>>> events.muons.pt        # now it reads Muon_pt...
 \end{minted}
 
 \vspace{-0.6 cm}
@@ -787,7 +787,7 @@ If you know your TTrees are CMS NanoAOD, you can get lazy arrays restructured in
 
 \vspace{-0.6 cm}
 \begin{minted}{python}
->>> events.columns      # to see structure (also tab-complete)
+>>> events.columns         # to see structure (also tab-complete)
 \end{minted}
 
 \vspace{-0.6 cm}
@@ -798,6 +798,11 @@ If you know your TTrees are CMS NanoAOD, you can get lazy arrays restructured in
  'PV', 'SVs', 'otherPVs', 'pileup', 'trigobjs', 'gen', 'etc', 'raw']
 \end{verbatim}
 \color{black}
+
+\vspace{-0.6 cm}
+\begin{minted}{python}
+>>> events.muons.columns   # to see the muon columns...
+\end{minted}
 \end{columns}
 \end{frame}
 
@@ -892,8 +897,8 @@ lazy arrays are \mintinline{python}{ChunkedArrays} containing \mintinline{python
 
 \begin{itemize}\setlength{\itemsep}{0.2 cm}
 \item PyROOT's interoperability with Numpy is improving: \mintinline{c++}{TTree::AsMatrix} and \mintinline{c++}{RDataFrame::AsNumpy}.
-\item PyROOT's \mintinline{c++}{AsMatrix} and root\_numpy both have issues with jagged array structures.
-\item uproot built on awkward-array, which extends Numpy's data structures, including operations to deal with particle kinematics.
+\item PyROOT's \mintinline{c++}{AsMatrix} and root\_numpy both have issues with jagged array structures, though.
+\item uproot is built on awkward-array, which extends Numpy's data structures, including operations to deal with combinatorics.
 \item Try the awkward-array Pandas extension by Michael Hedges!
 \item New lazy array methods in uproot to simplify handling of big or multi-file arrays.
 \item NanoAOD profile gives a high-level view of CMS data.
