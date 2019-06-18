@@ -651,7 +651,7 @@ Simply read from the file and return an array. & & Get an object that reads on d
 *Lazy arrays/iteration over sets of files.
 \end{frame}
 
-\begin{frame}[fragile]{Direct vs iterative}
+\begin{frame}[fragile]{Direct $\to$ iterative}
 \large
 \vspace{0.25 cm}
 If you have a small file, you can simply read the whole thing into arrays.
@@ -694,16 +694,17 @@ Same array calculation (\mintinline{python}{pz}), but merging is manual.
 \end{uncoverenv}
 \end{frame}
 
-\begin{frame}[fragile]{Iterative vs lazy}
+\begin{frame}[fragile]{Direct $\to$ lazy}
 \large
 \vspace{0.25 cm}
 
 The good thing about direct $\to$ iterative is that your array-processing code doesn't have to change (they're just smaller arrays).
 
 \vspace{0.25 cm}
-The bad thing is that it has to be embedded in a loop.
+The bad thing is that it has to be embedded in an explicit loop.
 
 \vspace{0.25 cm}
+\begin{uncoverenv}<2->
 Lazy arrays have an interface like direct arrays but internally iterate in chunks.
 
 \small
@@ -727,8 +728,9 @@ Lazy arrays have an interface like direct arrays but internally iterate in chunk
 <ChunkedArray [[] [] [5.31576] ... [26.35128] [] [44.2805 6.699721]]>
 \end{verbatim}
 \color{black}\large
+\end{uncoverenv}
 
-\begin{uncoverenv}<2->
+\begin{uncoverenv}<3->
 The following splits data into 1~GB chunks, loading no more than 3~GB at a time, and computes \mintinline{python}{pz} from \mintinline{python}{Muon_pt} and \mintinline{python}{Muon_eta}.
 
 \small
@@ -741,7 +743,118 @@ The following splits data into 1~GB chunks, loading no more than 3~GB at a time,
 \end{uncoverenv}
 \end{frame}
 
-%% \begin{frame}{Lazy profile: CMS NanoAOD}
-%% \end{frame}
+\begin{frame}[fragile]{Lazy profile: CMS NanoAOD}
+\large
+\vspace{0.5 cm}
+
+\begin{columns}
+\column{1.05\linewidth}
+If you know your TTrees are CMS NanoAOD, you can get lazy arrays restructured in an event hierarchy:
+
+\small
+\begin{minted}{python}
+>>> events = ttree.lazyarrays(profile="cms.nanoaod")
+>>> events
+\end{minted}
+
+\vspace{-0.6 cm}
+\color{darkblue}\begin{verbatim}
+<Table [<Event 0> <Event 1> ... <Event 499998> <Event 499999>]>
+\end{verbatim}
+\color{black}
+
+\vspace{-0.6 cm}
+\begin{minted}{python}
+>>> events.muons        # now it reads nMuon...
+\end{minted}
+
+\vspace{-0.6 cm}
+\color{darkblue}\begin{verbatim}
+<ChunkedArray [[] [] [<Muon 0>] ... [] [<Muon 537187> <Muon 537188>]]>
+\end{verbatim}
+\color{black}
+
+\vspace{-0.6 cm}
+\begin{minted}{python}
+>>> events.muons.pt     # now it reads Muon_pt...
+\end{minted}
+
+\vspace{-0.6 cm}
+\color{darkblue}\begin{verbatim}
+<ChunkedArray [[] [] [5.315762] ... [] [44.28051 6.6997213]]>
+\end{verbatim}
+\color{black}
+
+\vspace{-0.6 cm}
+\begin{minted}{python}
+>>> events.columns      # to see structure (also tab-complete)
+\end{minted}
+
+\vspace{-0.6 cm}
+\color{darkblue}\begin{verbatim}
+['run', 'lumi', 'event', 'electrons', 'muons', 'taus', 'photons',
+ 'jets', 'fatjets', 'subjets', 'isotracks', 'softjets', 'softactivity',
+ 'fixedGridRhoFastjet', 'MET', 'rawMET', 'caloMET', 'puppiMET', 'tkMET',
+ 'PV', 'SVs', 'otherPVs', 'pileup', 'trigobjs', 'gen', 'etc', 'raw']
+\end{verbatim}
+\color{black}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Lazy profile: CMS NanoAOD}
+\large
+\vspace{0.3 cm}
+
+Since everything is loaded on demand, some fields can be defined in terms of others without unnecessary reading or memory use.
+
+\small
+\begin{minted}{python}
+>>> events.muons.p4     # now it reads Muon_eta, Muon_phi, Muon_mass
+\end{minted}
+
+\vspace{-0.4 cm}
+\color{darkblue}\begin{verbatim}
+<ChunkedArray [[]
+               []
+               [TLorentzVector(5.315, 1.127, 2.695, 0.1057)] ...
+               [TLorentzVector(44.281, 0.78564, 2.3838, 0.10571)
+                TLorentzVector(6.6997, 1.9197, -0.070618, 0.10571)]]>
+\end{verbatim}
+\color{black}\large
+
+\begin{uncoverenv}<2->
+Cross-references are presented as objects, too.
+
+\small
+\begin{minted}{python}
+>>> events.muons.jet    # now it reads Muon_JetIdx and nJet
+\end{minted}
+
+\vspace{-0.3 cm}
+\color{darkblue}\begin{verbatim}
+<ChunkedArray [[] [] [<Jet 12>] ... [<Jet 4102602> <Jet 4102603>]]>
+\end{verbatim}
+\color{black}\large
+\end{uncoverenv}
+
+\begin{uncoverenv}<3->
+So we can compute things like ``$\Delta \phi$ between every muon and its associated jet.''
+
+\small
+\begin{minted}{python}
+>>> events.muons.p4.delta_phi(events.muons.jet.p4)
+\end{minted}
+
+\vspace{-0.3 cm}
+\color{darkblue}\begin{verbatim}
+<ChunkedArray [[] [] [-0.118652344] ... [0.0009765625 0.1444397]]>
+\end{verbatim}
+\color{black}
+\end{uncoverenv}
+\end{frame}
+
+
+
+
 
 \end{document}
