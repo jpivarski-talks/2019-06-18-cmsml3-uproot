@@ -674,7 +674,7 @@ but if you have many files or limited memory, iterate over chunks.
 \vspace{-0.1 cm}
 \begin{minted}{python}
 counts = None
-for pt, eta in uproot.iterate("files*.root", "Events",
+for pt, eta in uproot.iterate("cms-nanoaod/*.root", "Events",
         ["Muon_pt", "Muon_eta"], outputtype=tuple, entrysteps="3 GB"):
     pz = pt * numpy.sinh(eta)    # calculate 3 GB at a time
     newcounts, edges = numpy.histogram(pz.flatten(),
@@ -694,6 +694,52 @@ Same array calculation (\mintinline{python}{pz}), but merging is manual.
 \end{uncoverenv}
 \end{frame}
 
+\begin{frame}[fragile]{Iterative vs lazy}
+\large
+\vspace{0.25 cm}
+
+The good thing about direct $\to$ iterative is that your array-processing code doesn't have to change (they're just smaller arrays).
+
+\vspace{0.25 cm}
+The bad thing is that it has to be embedded in a loop.
+
+\vspace{0.25 cm}
+Lazy arrays have an interface like direct arrays but internally iterate in chunks.
+
+\small
+\begin{minted}{python}
+>>> ttree.array("Muon_pt")      # loads whole array, contiguously
+\end{minted}
+
+\vspace{-0.4 cm}
+\color{darkblue}\begin{verbatim}
+<JaggedArray  [[] [] [5.31576] ... [26.35128] [] [44.2805 6.699721]]>
+\end{verbatim}
+\color{black}
+
+\vspace{-0.4 cm}
+\begin{minted}{python}
+>>> ttree.lazyarray("Muon_pt")  # loads first and last chunk (to print)
+\end{minted}
+
+\vspace{-0.4 cm}
+\color{darkblue}\begin{verbatim}
+<ChunkedArray [[] [] [5.31576] ... [26.35128] [] [44.2805 6.699721]]>
+\end{verbatim}
+\color{black}\large
+
+\begin{uncoverenv}<2->
+The following splits data into 1~GB chunks, loading no more than 3~GB at a time, and computes \mintinline{python}{pz} from \mintinline{python}{Muon_pt} and \mintinline{python}{Muon_eta}.
+
+\small
+\begin{minted}{python}
+>>> cache = uproot.ArrayCache("3 GB")
+>>> events = uproot.lazyarrays("cms-nanoaod/*.root", "Events",
+                               entrysteps="1 GB", cache=cache)
+>>> pz = events.Muon_pt * numpy.sinh(events.Muon_eta)
+\end{minted}
+\end{uncoverenv}
+\end{frame}
 
 %% \begin{frame}{Lazy profile: CMS NanoAOD}
 %% \end{frame}
